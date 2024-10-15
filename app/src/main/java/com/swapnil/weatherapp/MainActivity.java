@@ -1,9 +1,12 @@
-package com.sandipbhattacharya.weatherupdate;
+package com.swapnil.weatherapp;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,10 +29,15 @@ import java.text.DecimalFormat;
 public class MainActivity extends AppCompatActivity {
     EditText etCity, etCountry;
     TextView tvResult;
+    TextView tvTempreture;
+    TextView tvWindSpeed;
+    TextView tvCloudiness;
+    TextView tvPressure;
     private final String url = "https://api.openweathermap.org/data/2.5/weather";
     private final String appid = "e53301e27efa0b66d05045d91b2742d3";
     DecimalFormat df = new DecimalFormat("#.##");
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,15 +46,28 @@ public class MainActivity extends AppCompatActivity {
         etCity = findViewById(R.id.etCity);
         etCountry = findViewById(R.id.etCountry);
         tvResult = findViewById(R.id.tvResult);
+        tvTempreture = findViewById(R.id.tvTempreture);
+        tvWindSpeed = findViewById(R.id.tvWindSpeed);
+        tvCloudiness = findViewById(R.id.tvCloudiness);
+        tvPressure = findViewById(R.id.tvPressure);
     }
 
     public void getWeatherDetails(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (getCurrentFocus() != null) {
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+
         String tempUrl = "";
         String city = etCity.getText().toString().trim();
         String country = etCountry.getText().toString().trim();
 
         if (city.isEmpty()) {
             tvResult.setText("City field cannot be empty!");
+            tvTempreture.setText("0");
+            tvWindSpeed.setText("0");
+            tvCloudiness.setText("0");
+            tvPressure.setText("0");
         } else {
             if (!country.isEmpty()) {
                 tempUrl = url + "?q=" + city + "," + country + "&appid=" + appid;
@@ -90,6 +112,10 @@ public class MainActivity extends AppCompatActivity {
                                         + "\n Cloudiness: " + clouds + "%"
                                         + "\n Pressure: " + pressure + " hPa";
                                 tvResult.setText(output);
+                                tvTempreture.setText(df.format(temp) + " °C");
+                                tvWindSpeed.setText(wind + " m/s");
+                                tvCloudiness.setText(clouds + "%");
+                                tvPressure.setText(pressure + " hPa");
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 tvResult.setText("Error parsing weather data.");

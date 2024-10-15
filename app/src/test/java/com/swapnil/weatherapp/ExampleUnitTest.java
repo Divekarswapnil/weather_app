@@ -1,4 +1,4 @@
-package com.sandipbhattacharya.weatherupdate;
+package com.swapnil.weatherapp;
 
 import org.junit.Test;
 

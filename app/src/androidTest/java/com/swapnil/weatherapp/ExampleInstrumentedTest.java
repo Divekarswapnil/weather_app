@@ -1,4 +1,4 @@
-package com.sandipbhattacharya.weatherupdate;
+package com.swapnil.weatherapp;
 
 import android.content.Context;
 
